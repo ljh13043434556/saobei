@@ -1,6 +1,7 @@
 {
     "name": "beck/saobei",
     "description": "saobei",
+    "license": "MIT",
     "authors": [
         {
             "name": "beck",
