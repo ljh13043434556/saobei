@@ -8,6 +8,7 @@
             "email": "790928939@qq.com"
         }
     ],
+    "minimum-stability": "dev",
     "require": {
         "php": ">=5.4.0",
         "curl/curl": "^1.9"
