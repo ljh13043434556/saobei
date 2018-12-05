@@ -1,0 +1,18 @@
+{
+    "name": "beck/saobei",
+    "description": "saobei",
+    "authors": [
+        {
+            "name": "beck",
+            "email": "790928939@qq.com"
+        }
+    ],
+    "require": {
+        "curl/curl": "^1.9"
+    },
+    "autoload": {
+        "psr-4": {
+            "saobei\\": "src/"
+        }
+    }
+}
