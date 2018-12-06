@@ -13,7 +13,9 @@ class Merchant
      */
     public static function add($param)
     {
-
+        /*$data = [
+            'inst_no' => '',
+        ];*/
     }
 
 
