@@ -1,9 +1,9 @@
 
-安装 php composer require beck/saobei dev-master
+#安装 php composer require beck/saobei dev-master
 
-/**
-     * wap支付
-     */
+```
+wap支付
+```
     public function pay()
     {
         $url = Pay::wapPay([
@@ -18,20 +18,25 @@
         echo $url;
     }
 
-    /**
+```
      * 刷卡 ， （出示二维码支付）
      * @throws \Exception
-     */
+```
     public function pay2()
     {
+
         set_time_limit(80);
         $result_ = Pay::barcodePay([
             'total_fee' => 1,
-            'auth_no' => '134516147112014504',
+            'auth_no' => '134759414261469920',
+            'token' => '832754adb88a48f68c681ebdbc2e442a'
         ]);
 
         echo '返回数据:';
         var_dump($result_);
+        if($result_ === 1) {
+            echo 'pay ok';die;
+        }
 
 
         $i=15;
@@ -54,9 +59,9 @@
     }
 
 
-    /**
+```
      * 接收支付回调数据
-     */
+```
     public function payNotify()
     {
         trace(I('post.'), 'post');
@@ -65,9 +70,9 @@
     }
 
 
-    /**
+```
      * 验签支付通知令牌
-     */
+```
     public function checksign()
     {
 
@@ -78,9 +83,9 @@
     }
 
 
-    /**
+```
      * 查询支付状态
-     */
+```
     public function query()
     {
         $result = Pay::query([
@@ -95,9 +100,9 @@
     }
 
 
-    /**
+```
      * 添加终端
-     */
+```
     public function addTerminal()
     {
         $result = \saobei\Terminal::add([

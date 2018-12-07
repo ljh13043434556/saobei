@@ -55,7 +55,7 @@ class Pay
         $parma_str =  Config::toUrlParams($data);
 
         return Config::createRequestUrl('/open/wap/110/pay' . '?' . $parma_str);
-        
+
     }
 
 
@@ -63,6 +63,7 @@ class Pay
      * 刷卡支付，（用户出示支付码，支付）
      * @param $params
      *  [
+     *      'token' =》 终端token
      *      'auth_no' => String	128	Y	授权码，客户的付款码,
      *      'total_fee' => String	12	Y	金额，单位分,
      *      'sub_appid' => sub_appid	String	16	N	公众号appid,
@@ -92,24 +93,17 @@ class Pay
         ];
 
         $data = array_filter($data);
-        echo "数据:\r\n";
-        var_dump($data);
-        Config::$TOKEN = '832754adb88a48f68c681ebdbc2e442a';
+
+        Config::$TOKEN = $params['token'];
         $data['key_sign'] = Config::sign($data);
 
 
         //请求接口
         $requestUrl = Config::createRequestUrl('/pay/110/barcodepay');
-        echo "加签名:";
-        var_dump($data);
 
-
-        echo "请求URL\r\n";
-        echo $requestUrl;
 
         $result = Curl::post($requestUrl, $data);
 
-        var_dump($result);
 
         if($result->result_code == '01') {
             //支付成功
