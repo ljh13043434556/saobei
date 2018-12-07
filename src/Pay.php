@@ -25,9 +25,7 @@ class Pay
      */
     public static function wapPay($params)
     {
-
-
-
+        
         $token = $params['token'];
 
         $data = [
@@ -43,19 +41,21 @@ class Pay
             'attach' => isset($params['attach']) ? $params['attach'] : '',
         ];
 
-
         $data = array_filter($data);
+        $data = Config::ksort($data);
 
         Config::$TOKEN = $token;
         $data['key_sign'] = Config::sign($data);
 
-        $data['notify_url'] = $data['notify_url'] ? urlencode($data['notify_url']) : $data['notify_url'];
-        $data['notify_url'] = $data['notify_url'] ? urlencode($data['front_url']) : $data['notify_url'];
+
+        $data['notify_url'] = $data['notify_url'] ? urlencode($data['notify_url']) : '';
+        $data['front_url'] = $data['front_url'] ? urlencode($data['front_url']) : '';
+        $data = array_filter($data);
 
         $parma_str =  Config::toUrlParams($data);
 
         return Config::createRequestUrl('/open/wap/110/pay' . '?' . $parma_str);
-
+        
     }
 
 
@@ -134,11 +134,14 @@ class Pay
     /**
      * 验证WAP支付，签名
      * @param $data
+     * @param $token 终端TOKEN
      */
-    public static function dealCheckSign($data)
+    public static function dealCheckSign($data, $token)
     {
         $data = is_array($data) ? $data[0] : $data;
         $key_sign = $data->key_sign;
+
+        Config::$TOKEN = $token;
 
         $checkField = [
             'return_code',
@@ -184,6 +187,8 @@ class Pay
     /**
      * 支付查询
      * @param $params [
+     *      'merchant_no' => 商户号
+     *      'terminal_id' => 终端 号
      *      'out_trade_no' => String	64	Y	订单号，查询凭据，可填利楚订单号、微信订单号、支付宝订单号、银行卡订单号任意一个
      *      'token' => 终端TOKEN
      * ]
@@ -194,8 +199,8 @@ class Pay
             'pay_ver' => '110',
             'pay_type' => '000',
             'service_id' => '020',
-            'merchant_no' => '810000283000002',
-            'terminal_id' => '30052944',
+            'merchant_no' => $params['merchant_no'],
+            'terminal_id' => $params['terminal_id'],
             'terminal_trace' => Config::uuid(),
             'terminal_time' => date('YmdHis'),
             'out_trade_no' => $params['out_trade_no'],
@@ -206,15 +211,10 @@ class Pay
 
         $data = Config::ksort($data);
         $data['key_sign'] = Config::sign($data);
-        var_dump($data);
+
         $url = Config::createRequestUrl('/pay/110/query');
 
-        echo $url . "\r\n";
-
-
         $result = Curl::post($url, $data);
-
-        var_dump($result);
 
         return $result;
 

@@ -42,8 +42,9 @@ class Config
         }
         $str = static::toUrlParams($data);
         $str2 = $str . '&'.$tokenName.'=' . static::$TOKEN;
-        echo "str2\r\n";
-        echo $str2;
+
+        echo "\r\n" . $str2 . "\r\n";
+
         return md5($str2);
     }
 
@@ -149,6 +150,7 @@ class Config
         }
 
         $sign_ = static::nSortSign($checkSignData);
+       
         if($sign_ == $sign) {
             return true;
         } else {
