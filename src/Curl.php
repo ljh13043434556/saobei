@@ -41,12 +41,7 @@ class Curl
             'Content-Type: application/json',
             'Content-Length: ' . strlen($data_string)
         ));
-
-
-        echo "\r\nurl\r\n$url\r\n";
-
-        echo "\r\n数据\r\n$data_string\r\n";
-
+        
         $result = $curl->post($url, $data_string);
 
         if($result->error) {

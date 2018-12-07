@@ -8,23 +8,24 @@ namespace saobei;
  */
 class Config
 {
-    const MERCHANT_NO = '812400205000001';                      //商户号
-    const TERMINAL_ID = '30051623';                             //终端号
-    public static $TOKEN = 'fafeac8d61064ab79d1310cc14c4e5ae';           //令牌
-    const SERVER_PAY_API = 'http://test.lcsw.cn:8045/lcsw';    //支付接口地址
+    /*
+        const MERCHANT_NO = '812400205000001';                              //商户号
+        const TERMINAL_ID = '30051623';                                     //终端号
+        这两个属性要去掉，因为他每个终端的都不一样
+    */
+    public static $TOKEN = 'fafeac8d61064ab79d1310cc14c4e5ae';         //令牌
+    const SERVER_PAY_API = 'http://test.lcsw.cn:8045/lcsw';             //支付接口地址
 
     /**
      * 生成签名,参与签名的字段按键排序
      * @param $data
      * @return string
      */
-    public static function sign($data)
+    public static function sign($data, $tokenName = 'access_token')
     {
         $data = static::ksort($data);
         $str = static::toUrlParams($data);
-        $str2 = $str . '&access_token=' . static::$TOKEN;
-        echo "str2\r\n";
-        echo $str2 . "\r\n";
+        $str2 = $str . '&'. $tokenName .'=' . static::$TOKEN;
         return md5($str2);
     }
 
@@ -34,13 +35,15 @@ class Config
      * @param $data
      * @return string
      */
-    public static function nSortSign($data)
+    public static function nSortSign($data, $tokenName='access_token')
     {
         if(is_object($data)) {
             $data = static::object2array($data);
         }
         $str = static::toUrlParams($data);
-        $str2 = $str . '&access_token=' . static::$TOKEN;
+        $str2 = $str . '&'.$tokenName.'=' . static::$TOKEN;
+        echo "str2\r\n";
+        echo $str2;
         return md5($str2);
     }
 
@@ -153,6 +156,22 @@ class Config
         }
     }
 
+
+    /**
+     * 生成UUID
+     * @param string $prefix
+     * @return string
+     */
+    public static function uuid($prefix = '')
+    {
+        $chars = md5(uniqid(mt_rand(), true));
+        $uuid  = substr($chars,0,8);
+        $uuid .= substr($chars,8,4);
+        $uuid .= substr($chars,12,4);
+        $uuid .= substr($chars,16,4);
+        $uuid .= substr($chars,20,12);
+        return $prefix . $uuid;
+    }
 
     
 }

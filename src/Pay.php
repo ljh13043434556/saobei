@@ -10,6 +10,9 @@ class Pay
     /**
      * @param $params
      *  [
+     *      'merchant_no' => 商户编号
+     *      'terminal_id' => 终端号
+     *      'token' => 终端令牌
      *      'terminal_trace' => '' String	32	Y	终端流水号，填写商户系统的订单号
      *      'total_fee' => '' String	12	Y	金额，单位分
      *      'order_body' => '' String	128	N	订单描述
@@ -23,25 +26,32 @@ class Pay
     public static function wapPay($params)
     {
 
+
+
+        $token = $params['token'];
+
         $data = [
-            'merchant_no' => Config::MERCHANT_NO,
-            'terminal_id' => Config::TERMINAL_ID,
+            'merchant_no' => $params['merchant_no'],
+            'terminal_id' => $params['terminal_id'],
             'terminal_trace' => $params['terminal_trace'],
             'terminal_time' => date('YmdHis'),
             'total_fee' => $params['total_fee'],
             'order_body' => isset($params['order_body']) ? $params['order_body'] : '',
             'notify_url' => isset($params['notify_url']) ? $params['notify_url'] : '',
-            'front_url' => isset($params['front_url']) ? urlencode($params['front_url']) : '',
-            'auto_pay' => isset($params['auto_pay']) ? urlencode($params['auto_pay']) : 0,
-            'attach' => isset($params['attach']) ? urlencode($params['attach']) : '',
+            'front_url' => isset($params['front_url']) ? $params['front_url'] : '',
+            'auto_pay' => isset($params['auto_pay']) ? $params['auto_pay'] : 0,
+            'attach' => isset($params['attach']) ? $params['attach'] : '',
         ];
 
 
         $data = array_filter($data);
 
+        Config::$TOKEN = $token;
         $data['key_sign'] = Config::sign($data);
 
-        $data['notify_url'] = urlencode($data['notify_url']);
+        $data['notify_url'] = $data['notify_url'] ? urlencode($data['notify_url']) : $data['notify_url'];
+        $data['notify_url'] = $data['notify_url'] ? urlencode($data['front_url']) : $data['notify_url'];
+
         $parma_str =  Config::toUrlParams($data);
 
         return Config::createRequestUrl('/open/wap/110/pay' . '?' . $parma_str);
@@ -175,6 +185,7 @@ class Pay
      * 支付查询
      * @param $params [
      *      'out_trade_no' => String	64	Y	订单号，查询凭据，可填利楚订单号、微信订单号、支付宝订单号、银行卡订单号任意一个
+     *      'token' => 终端TOKEN
      * ]
      */
     public static function query($params)
@@ -185,12 +196,12 @@ class Pay
             'service_id' => '020',
             'merchant_no' => '810000283000002',
             'terminal_id' => '30052944',
-            'terminal_trace' => time(),
+            'terminal_trace' => Config::uuid(),
             'terminal_time' => date('YmdHis'),
             'out_trade_no' => $params['out_trade_no'],
         ];
 
-        Config::$TOKEN = '832754adb88a48f68c681ebdbc2e442a';
+        Config::$TOKEN = $params['token'];
 
 
         $data = Config::ksort($data);
