@@ -215,4 +215,56 @@ class Pay
 
     }
 
+
+    /**
+     * 二维码支付
+     * $params
+     *  pay_ver	String	3	Y	版本号，当前版本100
+        pay_type	String	3	Y	请求类型，010微信，020 支付宝，060qq钱包，080京东钱包，090口碑，100翼支付
+        service_id	String	3	Y	接口类型，当前类型011
+        merchant_no	String	15	Y	商户号
+        terminal_id	String	8	Y	终端号
+        terminal_trace	String	32	Y	终端流水号，填写商户系统的订单号
+        terminal_time	String	14	Y	终端交易时间，yyyyMMddHHmmss，全局统一时间格式
+        total_fee	String	12	Y	金额，单位分
+        sub_appid	String	16	N	公众号appid
+        order_body	String	128	N	订单描述
+        notify_url	String	256	N	外部系统通知地址
+        attach	String	128	N	附加数据，原样返回
+        goods_detail	String	2048	N	订单包含的商品列表信息，Json格式。pay_type为090时，可选填此字段
+     */
+    public static function prepay($params)
+    {
+
+        $data = [
+            'pay_ver' => '100',
+            'pay_type' => $params['pay_type'],
+            'service_id' => '011',
+            'merchant_no' => $params['merchant_no'],
+            'terminal_id' => $params['terminal_id'],
+            'terminal_trace' => $params['terminal_trace'],
+            'terminal_time' => date('YmdHis'),
+            'total_fee' => intval($params['total_fee']),
+            //'notify_url' => $params['notify_url'],
+        ];
+
+        Config::$TOKEN = $params['token'];
+
+
+
+        $data['key_sign'] = Config::nSortSign($data);
+
+        $data['notify_url'] = urlencode($params['notify_url']);
+
+        $url = Config::createRequestUrl('/pay/100/prepay');
+
+        $result = Curl::post($url, $data);
+
+        return $result;
+
+    }
+
+
+
+
 }

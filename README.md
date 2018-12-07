@@ -113,3 +113,37 @@ wap支付
 
         var_dump($result);
     }
+
+
+
+```
+         * 二维码支付
+```
+        public function prepay()
+        {
+            $params = [
+                'pay_type' => I('pay_type'),
+                'merchant_no' => I('merchant_no'),
+                'terminal_id' => I('terminal_id'),
+                'terminal_trace' => I('terminal_trace'),
+                'total_fee' => intval(I('total_fee')),
+                'token' => I('token'),
+                'notify_url' => I('notify_url')
+            ];
+
+            foreach($params as $key => $val) {
+                if(empty($val)) {
+                    api_return(-1, $key . '不能为空');
+                }
+            }
+
+            try{
+                $result = \saobei\Pay::prepay($params);
+            }catch (\Exception $err) {
+                api_return(-1, $err->getMessage());
+            }
+
+            api_return(1, 'ok', $result);
+
+
+        }
