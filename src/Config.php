@@ -8,13 +8,11 @@ namespace saobei;
  */
 class Config
 {
-    /*
-        const MERCHANT_NO = '812400205000001';                              //商户号
-        const TERMINAL_ID = '30051623';      fsfsdfsdfsdfsd                               //终端号
-        这两个属性要去掉，因为他每个终端的都不一样
-    */
+ 
     public static $TOKEN = '';         //令牌
-    const SERVER_PAY_API = 'http://test.lcsw.cn:8045/lcsw';             //支付接口地址
+    //const SERVER_PAY_API = 'http://test.lcsw.cn:8045/lcsw';             //测试支付接口地址
+    const SERVER_PAY_API = 'https://pay.lcsw.cn/lcsw';             //生产支付接口地址
+
 
 
 

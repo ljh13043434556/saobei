@@ -41,6 +41,11 @@ class Curl
             'Content-Type: application/json',
             'Content-Length: ' . strlen($data_string)
         ));
+
+        if(substr($url, 0, 5) == 'https') {
+            $curl->setOpt(CURLOPT_RETURNTRANSFER, TRUE);
+            $curl->setOpt(CURLOPT_SSL_VERIFYPEER, FALSE);
+        }
         
         $result = $curl->post($url, $data_string);
 

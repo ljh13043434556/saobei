@@ -64,6 +64,8 @@ class Pay
      * @param $params
      *  [
      *      'token' =》 终端token
+     *      'merchant_no' =》 商户号
+     *      'terminal_id' => 终端号
      *      'auth_no' => String	128	Y	授权码，客户的付款码,
      *      'total_fee' => String	12	Y	金额，单位分,
      *      'sub_appid' => sub_appid	String	16	N	公众号appid,
@@ -79,9 +81,9 @@ class Pay
             'pay_ver' => '110',
             'pay_type' => '000',
             'service_id' => '010',
-            'merchant_no' => '810000283000002',
-            'terminal_id' => '30052944',
-            'terminal_trace' => time(),
+            'merchant_no' => $params['merchant_no'],
+            'terminal_id' => $params['terminal_id'],
+            'terminal_trace' => $params['terminal_trace'],
             'terminal_time' => date('YmdHis'),
             'auth_no' => $params['auth_no'],
             'total_fee' => $params['total_fee'],
@@ -245,19 +247,15 @@ class Pay
             'terminal_trace' => $params['terminal_trace'],
             'terminal_time' => date('YmdHis'),
             'total_fee' => intval($params['total_fee']),
-            //'notify_url' => $params['notify_url'],
         ];
 
         Config::$TOKEN = $params['token'];
-
-
-
         $data['key_sign'] = Config::nSortSign($data);
-
-        $data['notify_url'] = urlencode($params['notify_url']);
-
+        $data['notify_url'] = $params['notify_url'];
+        $data['attach'] = $params['attach'];
+        trace('扫码支付');
+        trace($data);
         $url = Config::createRequestUrl('/pay/100/prepay');
-
         $result = Curl::post($url, $data);
 
         return $result;
@@ -265,6 +263,53 @@ class Pay
     }
 
 
+    /**
+     * 退款申请
+     * @param $params
+     * [
+     *  pay_ver	String	3	Y	版本号，当前版本100
+        pay_type	String	3	Y	请求类型，010微信，020 支付宝，040 现金，060qq钱包，080京东钱包，090口碑，100翼支付，110银联二维码，000自动识别类型
+        service_id	String	3	Y	接口类型，当前类型030
+        merchant_no	String	15	Y	商户号
+        terminal_id	String	8	Y	终端号
+        terminal_trace	String	32	Y	终端退款流水号，填写商户系统的退款流水号
+        terminal_time	String	14	Y	终端退款时间，yyyyMMddHHmmss，全局统一时间格式
+        refund_fee	String	12	Y	退款金额，单位分
+        out_trade_no	String	64	Y	订单号，查询凭据，利楚订单号、微信订单号、支付宝订单号任意一个
+        pay_trace	String	32	N	当前支付终端流水号，与pay_time同时传递
+        pay_time	String	14	N	当前支付终端交易时间，yyyyMMddHHmmss，全局统一时间格式，与pay_trace同时传递
+        auth_code	String	6	N	短信或邮箱验证码
+        key_sign	String	32	Y	签名字符串,拼装所有必传参数+令牌，UTF-8编码，32位md5加密转换
+     * ]
+     */
+    public static function refund($params)
+    {
+        $data = [
+            'pay_ver' => '100',
+            'pay_type' => '000',
+            'service_id' => '030',
+            'merchant_no' => $params['merchant_no'],
+            'terminal_id' => $params['terminal_id'],
+            'terminal_trace' => $params['terminal_trace'],
+            'terminal_time' => date('YmdHis'),
+            'refund_fee' => $params['refund_fee'],
+            'out_trade_no' => $params['out_trade_no'],
+        ];
 
+        Config::$TOKEN = $params['token'];
+        $data['key_sign'] = Config::nSortSign($data);
+
+        $url = Config::createRequestUrl('/pay/100/refund');
+        $result = Curl::post($url, $data);
+
+        if($result->return_code == '02' || $result->result_code != '01') {
+            //失败
+            throw new \Exception($result->return_msg);
+        }
+
+        //成功
+        return $result;
+
+    }
 
 }
