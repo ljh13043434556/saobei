@@ -10,9 +10,9 @@ wap支付
             'terminal_trace' => time(),
             'total_fee' => 1,
             'notify_url' => C('HTTP_HOST') . '/wxsite/public/payNotify',
-            'token' => 'fafeac8d61064ab79d1310cc14c4e5ae',
-            'merchant_no' => '812400205000001',
-            'terminal_id' => '30051623',
+            'token' => 'XXX',
+            'merchant_no' => 'XXX',
+            'terminal_id' => 'XXX',
         ]);
 
         echo $url;
@@ -28,8 +28,8 @@ wap支付
         set_time_limit(80);
         $result_ = Pay::barcodePay([
             'total_fee' => 1,
-            'auth_no' => '134759414261469920',
-            'token' => '832754adb88a48f68c681ebdbc2e442a'
+            'auth_no' => 'XXX',
+            'token' => 'XXXXX'
         ]);
 
         echo '返回数据:';
@@ -43,9 +43,9 @@ wap支付
         while($i>0) {
             $result = Pay::query([
                 'out_trade_no' => $result_->out_trade_no,
-                'merchant_no' => '810000283000002',
-                'terminal_id' => '30052944',
-                'token' => '832754adb88a48f68c681ebdbc2e442a',
+                'merchant_no' => 'XXXX',
+                'terminal_id' => 'XXXX',
+                'token' => 'XXXXX',
             ]);
             sleep(5);
             if($result->result_code == '01') {
@@ -78,7 +78,7 @@ wap支付
 
         $data = json_decode('[{"attach":"","channel_trade_no":"4200000210201812051300071136","end_time":"20181205201840","key_sign":"478a2b16c06e6073a5c78c511d69b3b3","merchant_name":"2018WebSdk对接专用(勿动)","merchant_no":"812400205000001","out_trade_no":"300516230021318120520183000002","pay_type":"010","receipt_fee":"1","result_code":"01","return_code":"01","return_msg":"支付成功","terminal_id":"30051623","terminal_time":"20181205201810","terminal_trace":"1544012290","total_fee":"1","user_id":"obnG9jnSlF_vh8gP7Mq7Ven6QSJ0"}]');
 
-        $rst = Pay::dealCheckSign($data, 'fafeac8d61064ab79d1310cc14c4e5ae');
+        $rst = Pay::dealCheckSign($data, 'XXXXX');
 
     }
 
@@ -89,10 +89,10 @@ wap支付
     public function query()
     {
         $result = Pay::query([
-            'out_trade_no' => '300529440021118120611272700015',
-            'merchant_no' => '810000283000002',
-            'terminal_id' => '30052944',
-            'token' => '832754adb88a48f68c681ebdbc2e442a',
+            'out_trade_no' => 'XXXXX',
+            'merchant_no' => 'XXXXX',
+            'terminal_id' => 'XXXXX',
+            'token' => 'XXXXX',
         ]);
 
         var_dump($result);
@@ -106,9 +106,9 @@ wap支付
     public function addTerminal()
     {
         $result = \saobei\Terminal::add([
-            'inst_no' => '52100021',
-            'merchant_no' => '810000283000002',
-            'key' => '2d7c2a70e2cd4e33902f6215cd368400',
+            'inst_no' => 'XXXXX',
+            'merchant_no' => 'XXXXXX',
+            'key' => 'XXXXX',
         ]);
 
         var_dump($result);
